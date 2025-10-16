@@ -598,3 +598,241 @@ button:focus-visible {
         display: none;
     }
 }
+
+/* ============================================================
+   [GLOBAL Overrides y Variables] : Justificación
+   Añade variables locales y selectores de más especificidad para
+   no romper estilos existentes y facilitar ajustes posteriores.
+   ============================================================ */
+:root {
+  --cta-emphasis: #0e7a5f;      /* Verde esmeralda: contraste fuerte y profesional */
+  --cta-emphasis-dark: #0b6049;
+  --audio-control-bg: rgba(255,255,255,0.92);
+  --audio-control-color: #0b0b0b;
+  --header-elev-bg: rgba(0,0,0,0.92);
+  --focus-ring: 3px;
+}
+
+/* ============================================================
+   [Header Sticky / Elevation] : Justificación
+   Refuerza la percepción de calidad con sombra al hacer scroll.
+   ============================================================ */
+header.scrolled {
+  box-shadow: 0 8px 30px rgba(2,6,23,0.55);
+  background: var(--header-elev-bg);
+  transform: translateZ(0);
+  transition: box-shadow 240ms ease, background 240ms ease;
+}
+
+/* ============================================================
+   [Hero CTA Emphasis] : Justificación
+   Aumentar contraste visual del CTA principal para mejorar CTR.
+   No modificamos .cta global; sólo reforzamos la instancia dentro de .hero
+   ============================================================ */
+.hero .actions .btn.gold,
+.hero .actions a.btn.gold {
+  background: var(--cta-emphasis) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 6px 18px rgba(14,122,95,0.18);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+.hero .actions .btn.gold:hover,
+.hero .actions a.btn.gold:hover {
+  background: var(--cta-emphasis-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(11,96,73,0.20);
+}
+
+/* ============================================================
+   [Audio Control - Estética y Accesibilidad] : Justificación
+   Control de audio no intrusivo, circular, accesible y visible.
+   ============================================================ */
+.audio-control {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1200;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.audio-control button {
+  background: var(--audio-control-bg);
+  color: var(--audio-control-color);
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  cursor: pointer;
+  font-size: 1.05rem;
+  display: inline-grid;
+  place-items: center;
+  box-shadow: 0 6px 20px rgba(2,6,23,0.35);
+  transition: transform 180ms ease, background 180ms ease;
+}
+.audio-control button:hover {
+  transform: scale(1.05);
+}
+.audio-control .tooltip {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  white-space: nowrap;
+  transform-origin: right center;
+  transform: translateX(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+.audio-control:hover .tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Visual cue cuando audio está activo */
+.audio-control button.sound-on {
+  background: linear-gradient(180deg, #ffffff 0%, #f1f1f1 100%);
+  color: var(--cta-emphasis-dark);
+  box-shadow: 0 12px 30px rgba(14,122,95,0.22);
+}
+
+/* ============================================================
+   [About / 'Sobre Mí' Section] : Justificación
+   Tipografía y espaciado para el bloque emocional: legible y con foco.
+   ============================================================ */
+#sobre-mi {
+  padding: 36px;
+  margin-top: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+#sobre-mi h2 {
+  color: var(--gold-primary);
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  margin-bottom: 10px;
+}
+#sobre-mi p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   [Contact Form Styling y Feedback] : Justificación
+   Inputs modernos, feedback visible y foco accesible.
+   ============================================================ */
+.contact-form {
+  display: grid;
+  gap: 12px;
+  max-width: 780px;
+}
+.contact-form label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea,
+.contact-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  transition: box-shadow 140ms ease, border-color 140ms ease, transform 140ms ease;
+  min-height: 44px;
+}
+.contact-form textarea { min-height: 120px; resize: vertical; }
+.contact-form input:focus,
+.contact-form textarea:focus,
+.contact-form select:focus {
+  outline: none;
+  box-shadow: 0 8px 20px rgba(14,122,95,0.12);
+  border-color: rgba(14,122,95,0.35);
+}
+
+/* Botón enviar */
+.contact-form .btn-submit {
+  background: var(--cta-emphasis);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  width: fit-content;
+}
+.contact-form .btn-submit:hover { background: var(--cta-emphasis-dark); transform: translateY(-2px); }
+
+/* Mensajes de estado */
+.form-status {
+  display: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+.form-status.success {
+  display: block;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.form-status.error {
+  display: block;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* ============================================================
+   [Portfolio: mejoras sin tocar HTML] : Justificación
+   Priorizar visual del portafolio y lazy-loading para performance.
+   ============================================================ */
+/* Añade un ligero borde y overlay para mejor lectura */
+#proyectos .project img,
+#proyectos .project picture {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+/* Fuerza mejor spacing en proyecto y botón CTA más llamativo */
+#proyectos .project h4 { color: var(--gold-primary); margin-bottom: 8px; }
+#proyectos .project .btn.ghost { border-radius: 8px; padding: 8px 12px; }
+
+/* ============================================================
+   [Utilities] : Justificación
+   Pequeñas utilidades para interacciones y accesibilidad.
+   ============================================================ */
+/* Enlaces de llamada a la acción más visibles */
+a[href^="mailto:"],
+a[href*="wa.me"] {
+  text-decoration: none !important;
+}
+
+/* Focus visible mejorado */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: var(--focus-ring) solid rgba(14,122,95,0.18);
+  outline-offset: 3px;
+}
+
+/* Mobile tweaks: botón principal ocupa más presencia */
+@media (max-width: 480px) {
+  .audio-control { right: 12px; bottom: 12px; }
+  .audio-control button { width: 48px; height: 48px; }
+  .hero .actions .btn.gold { width: 100%; text-align: center; }
+  .contact-form { gap: 10px; }
+}
