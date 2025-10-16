@@ -276,5 +276,234 @@ document.addEventListener('DOMContentLoaded', function() {
         dropdownMenu.classList.remove('show');
     });
     </script>
+
+    <!-- ============================================================
+     [SCRIPT] : Inyección HTML/JS mínima (pegar antes de </body>)
+     - Reubica el portafolio para que quede justo después del hero
+     - Inserta la sección "Sobre Mí" con el copy emocional
+     - Añade el audio inmersivo con botón mute/unmute
+     - Mejora formulario: select de asunto y envío por mailto + feedback
+     - Lazy-load de imágenes del portafolio
+     ============================================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  /* -----------------------------
+     1) Mover #proyectos justo después del hero (UX: Portafolio protagonista)
+     ----------------------------- */
+  try {
+    const hero = document.getElementById('inicio');
+    const proyectos = document.getElementById('proyectos');
+    if (hero && proyectos && hero.parentNode) {
+      // Insertar proyectos inmediatamente después del hero
+      hero.parentNode.insertBefore(proyectos, hero.nextSibling);
+    }
+  } catch (e) { console.warn('Reubicación de proyectos falló:', e); }
+
+  /* -----------------------------
+     2) Insertar sección "Sobre Mí" (copy emocional) si no existe
+     ----------------------------- */
+  if (!document.getElementById('sobre-mi')) {
+    const sobreHtml = `
+      <section id="sobre-mi" class="section" aria-labelledby="sobre-title">
+        <h2 id="sobre-title">Más que un Cantante soy un explorador de melodías; mas que un músico soy un interprete de instrumentos y mas que un Productor, soy un Arquitecto de Sonidos</h2>
+        <p>Durante [20] años, mi vida ha sido un viaje a través de las melodías, sonidos, ritmos, frecuencias y al día de hoy la busqueda en la nueva tecnología e instrumentos digitales. No solo veo la música; la siento en código, la visualizo en ondas y la construyo desde el silencio. Mi misión es transformar la idea abstracta que ronda en tu mente en una realidad sonora poderosa y llena de vida, que no solo se escuche, sino que se experimente.</p>
+        <p>Esta misma pasión por la creación estructurada y la excelencia técnica es la que aplico al desarrollar espacios digitales. Comprendí que un website para un artista es su escenario virtual: debe capturar su esencia, amplificar su voz y conectar profundamente con su audiencia. Por eso, ofrezco un servicio integral donde el arte y la ingeniería se fusionan, entregando no solo un tema mezclado a la perfección o un sitio web, sino una pieza más de tu identidad creativa.</p>
+      </section>
+    `;
+    // Insertar después del hero (entre hero y proyectos ahora)
+    const hero = document.getElementById('inicio');
+    if (hero && hero.parentNode) {
+      hero.parentNode.insertAdjacentHTML('afterend', sobreHtml);
+    }
+  }
+
+  /* -----------------------------
+     3) Audio inmersivo: insertar controles en el DOM (muted by default)
+     ----------------------------- */
+  (function insertAudio() {
+    // Evitar duplicados
+    if (document.getElementById('backgroundAudio')) return;
+
+    // HTML del control
+    const audioControlHtml = `
+      <div class="audio-control" aria-hidden="false">
+        <button id="audioToggle" aria-pressed="false" aria-label="Activar sonido de fondo" title="Sumérgete en la experiencia sonora">
+          <i class="fas fa-volume-mute" aria-hidden="true"></i>
+        </button>
+        <div class="tooltip" role="status" aria-live="polite">Sumérgete en la experiencia sonora</div>
+      </div>
+      <audio id="backgroundAudio" loop muted preload="metadata">
+        <!-- Reemplaza la ruta debajo por la pista comprimida que prefieras (web/MP3 optimizado) -->
+        <source src="assets/osklin_intro_short.mp3" type="audio/mpeg">
+        Tu navegador no soporta audio.
+      </audio>
+    `;
+    document.body.insertAdjacentHTML('beforeend', audioControlHtml);
+
+    // Control JS
+    const audio = document.getElementById('backgroundAudio');
+    const audioToggle = document.getElementById('audioToggle');
+    const tooltip = document.querySelector('.audio-control .tooltip');
+
+    // Mejora de UX: reproducir cuando usuario active sonido (navegadores bloquean autoplay con sonido)
+    audioToggle.addEventListener('click', function(e){
+      e.preventDefault();
+      if (!audio) return;
+      if (audio.muted) {
+        audio.muted = false;
+        audio.play().catch(err => {
+          // si la reproducción falla, mostramos tooltip con instrucción
+          tooltip.textContent = 'El navegador bloqueó la reproducción automática. Presiona el botón de nuevo.';
+        });
+        audioToggle.classList.add('sound-on');
+        audioToggle.setAttribute('aria-pressed','true');
+        audioToggle.querySelector('i').classList && audioToggle.querySelector('i').classList.replace('fa-volume-mute','fa-volume-up');
+        tooltip.textContent = 'Audio activado — Sumérgete en la experiencia sonora';
+      } else {
+        audio.muted = true;
+        audioToggle.classList.remove('sound-on');
+        audioToggle.setAttribute('aria-pressed','false');
+        audioToggle.querySelector('i').classList && audioToggle.querySelector('i').classList.replace('fa-volume-up','fa-volume-mute');
+        tooltip.textContent = 'Audio silenciado';
+      }
+    });
+  })();
+
+  /* -----------------------------
+     4) Formulario de contacto funcional sin backend (mailto) + select asunto
+     - Se insertará si no existe un form dentro de #contacto
+     ----------------------------- */
+  (function enhanceContact() {
+    const contacto = document.getElementById('contacto');
+    if (!contacto) return;
+
+    // Si ya existe un form, no insertar; si no, añadimos uno funcional que usa mailto
+    if (!contacto.querySelector('form.contact-form')) {
+      const formHtml = `
+        <form class="contact-form" id="siteContactForm" aria-label="Formulario de contacto">
+          <label for="name">Tu nombre</label>
+          <input type="text" id="name" name="name" required placeholder="Tu nombre completo">
+
+          <label for="email">Tu correo</label>
+          <input type="email" id="email" name="email" required placeholder="tu@correo.com">
+
+          <label for="subject">Asunto de tu consulta:</label>
+          <select id="subject" name="subject" required>
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option value="Producción Musical">Producción Musical</option>
+            <option value="Mezcla y Masterización">Mezcla y Masterización</option>
+            <option value="Consultoría Técnica">Consultoría Técnica</option>
+            <option value="Creación de Website">Creación de Website</option>
+            <option value="Otro">Otro</option>
+          </select>
+
+          <label for="message">Mensaje</label>
+          <textarea id="message" name="message" required placeholder="Cuéntame sobre tu proyecto..."></textarea>
+
+          <button type="submit" class="btn-submit">Enviar mensaje</button>
+          <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+        </form>
+      `;
+      // Insertar el form antes de la sección de contact-info para que sea visible
+      const insertBefore = contacto.querySelector('.contact-info') || contacto.querySelector('.contact-buttons');
+      if (insertBefore) {
+        insertBefore.insertAdjacentHTML('beforebegin', formHtml);
+      } else {
+        contacto.insertAdjacentHTML('beforeend', formHtml);
+      }
+
+      // JS para manejar envío vía mailto: (evita backend, garantiza que el correo vaya a odeam@osklindealba.com)
+      const form = document.getElementById('siteContactForm');
+      const statusDiv = document.getElementById('formStatus');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const name = encodeURIComponent(document.getElementById('name').value.trim());
+        const email = encodeURIComponent(document.getElementById('email').value.trim());
+        const subject = encodeURIComponent(document.getElementById('subject').value || 'Contacto desde web');
+        const message = encodeURIComponent(document.getElementById('message').value.trim());
+
+        if (!name || !email || !subject || !message) {
+          statusDiv.className = 'form-status error';
+          statusDiv.textContent = 'Por favor completa todos los campos antes de enviar.';
+          return;
+        }
+
+        // Construir mailto
+        const to = 'odeam@osklindealba.com';
+        const mailSubject = `${subject} — Web ODAM`;
+        const mailBody = `Nombre: ${decodeURIComponent(name)}%0AEmail: ${decodeURIComponent(email)}%0A%0AMensaje:%0A${decodeURIComponent(message)}`;
+
+        // Abrir cliente de correo
+        const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+        // Intentamos abrir en nueva ventana para no romper SPA si existe
+        window.location.href = mailtoLink;
+
+        // Mostrar feedback localmente (si el cliente de correo se abre, es suficiente)
+        statusDiv.className = 'form-status success';
+        statusDiv.textContent = '¡Gracias! Se abrió tu cliente de correo. Si no se abre, envía un correo a odeam@osklindealba.com.';
+      });
+    }
+  })();
+
+  /* -----------------------------
+     5) Lazy-load de imágenes del portafolio para mejorar performance
+     ----------------------------- */
+  (function lazyLoadPortfolio() {
+    const projects = document.querySelectorAll('#proyectos img');
+    projects.forEach(img => {
+      if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+      }
+      // Si la imagen es logo.jpg o pesa, puede añadirse srcset aquí dinámicamente en el futuro.
+    });
+  })();
+
+  /* -----------------------------
+     6) Header: añadir clase .scrolled al hacer scroll (sombra)
+     ----------------------------- */
+  (function headerScroll() {
+    const header = document.querySelector('header');
+    if (!header) return;
+    const threshold = 8; // px
+    const onScroll = () => {
+      if (window.scrollY > threshold) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+
+  /* -----------------------------
+     7) Mejora de accesibilidad: permitir pausado automático si usuario cierra pestaña
+     ----------------------------- */
+  (function visibilityAudioPause(){
+    const audio = document.getElementById('backgroundAudio');
+    if (!audio) return;
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        audio.pause();
+      } else {
+        // sólo reanudar si no está silenciado y si tiene permiso
+        if (!audio.muted) audio.play().catch(()=>{/* ignore */});
+      }
+    });
+  })();
+
+  /* -----------------------------
+     8) Cargar icon font (FontAwesome) si no está cargada para los iconos de audio
+     ----------------------------- */
+  (function loadFA(){
+    if (!document.querySelector('link[href*="font-awesome"]') && !document.querySelector('script[src*="fontawesome"]')) {
+      const fa = document.createElement('script');
+      fa.src = 'https://kit.fontawesome.com/a2d9b3c0b1.js';
+      fa.crossOrigin = 'anonymous';
+      fa.defer = true;
+      document.head.appendChild(fa);
+    }
+  })();
+
+});
+</script>
+
     </body>
 </html>
