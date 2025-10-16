@@ -510,3 +510,91 @@ button:focus-visible {
   outline: 2px solid var(--gold-primary);
   outline-offset: 2px;
 }
+
+/* ===== MENÚ DESPLEGABLE DEL LOGO ===== */
+.brand-container {
+    position: relative;
+    display: inline-block;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: var(--border-radius-sm);
+}
+
+.brand:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-1px);
+}
+
+.dropdown-arrow {
+    font-size: 0.8rem;
+    color: var(--rich-gold);
+    transition: transform 0.3s ease;
+}
+
+.brand.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.98);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--border-radius);
+    padding: var(--space-sm);
+    min-width: 220px;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-15px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1001;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5px);
+}
+
+.dropdown-menu a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--border-radius-sm);
+    transition: all 0.3s ease;
+    margin: 4px 0;
+    font-weight: var(--font-medium);
+}
+
+.dropdown-menu a:hover {
+    color: var(--rich-gold);
+    background: rgba(200, 162, 95, 0.15);
+    transform: translateX(5px);
+}
+
+/* Ocultar navegación en móviles */
+@media (max-width: 767px) {
+    nav {
+        display: none;
+    }
+}
+
+/* Mostrar navegación en desktop */
+@media (min-width: 768px) {
+    .dropdown-menu {
+        display: none;
+    }
+}
