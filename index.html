@@ -233,5 +233,48 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-</body>
+        <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Particles.js Configuration
+        document.addEventListener('DOMContentLoaded', function() {
+            if(typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    // ... (tu código de partículas existente)
+                });
+            }
+
+            // Smooth scrolling and animations
+            // ... (tu código existente de scroll y animaciones)
+        });
+    </script>
+
+    <!-- Menú Desplegable del Logo -->
+    <script>
+    // Menú desplegable del logo
+    const logoMenu = document.getElementById('logo-menu');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    logoMenu.addEventListener('click', function(e) {
+        e.preventDefault();
+        dropdownMenu.classList.toggle('show');
+    });
+
+    // Cerrar menú al hacer click fuera
+    document.addEventListener('click', function(e) {
+        if (!logoMenu.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+        }
+    });
+
+    function closeDropdown() {
+        dropdownMenu.classList.remove('show');
+    }
+
+    // Cerrar menú al hacer scroll
+    window.addEventListener('scroll', function() {
+        dropdownMenu.classList.remove('show');
+    });
+    </script>
+    </body>
 </html>
